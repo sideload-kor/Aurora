@@ -50,11 +50,6 @@ jobs:
           rm -rf packages
           mkdir -p packages
 
-          # Keep the project and workspace package resolutions identical.
-          cp \
-            Feather.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved \
-            Feather.xcworkspace/xcshareddata/swiftpm/Package.resolved
-
       - name: Set build version
         run: |
           set -euo pipefail
