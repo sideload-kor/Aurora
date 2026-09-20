@@ -46,7 +46,6 @@ $(PLATFORMS): deps
 		-destination "$$DEST" \
 		-derivedDataPath "$(TMP)/$@" \
 		-skipPackagePluginValidation \
-		-disableAutomaticPackageResolution \
 		CODE_SIGNING_ALLOWED=NO \
 		ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO
 
