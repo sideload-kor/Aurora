@@ -10,6 +10,7 @@ import NimbleViews
 import NukeUI
 
 struct SourcesView: View {
+    @AppStorage("Feather.userTintColor") private var tintHex: String = "#848ef9"
     @StateObject private var viewModel = SourcesViewModel.shared
     @State private var searchText = ""
     @State private var isAddingSource = false
@@ -72,7 +73,7 @@ struct SourcesView: View {
                     .presentationDetents([.medium, .large])
             }
         }
-        .tint(.orange)
+        .tint(Color(hex: tintHex))
         .task(id: Array(sources)) {
             await viewModel.fetchSources(sources)
         }

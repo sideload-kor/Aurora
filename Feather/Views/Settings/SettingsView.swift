@@ -8,11 +8,13 @@ import NimbleViews
 import UIKit
 import Darwin
 import IDeviceSwift
+import AltSourceKit
 
 struct SettingsView: View {
     @AppStorage("feather.selectedCert") private var storedSelectedCert: Int = 0
+    @AppStorage("Feather.userTintColor") private var tintHex: String = "#848ef9"
     @AppStorage("aurora.language") private var language = "en"
-    @AppStorage("aurora.hasCompletedOnboarding") private var hasCompletedOnboarding = true
+    @AppStorage("aurora.hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     @State private var currentIcon: String? = UIApplication.shared.alternateIconName
     @State private var showingResetOnboarding = false
@@ -23,8 +25,8 @@ struct SettingsView: View {
         animation: .snappy
     ) private var certificates: FetchedResults<CertificatePair>
 
-    private let donationsURL = "https://github.com/sponsors/claration"
-    private let githubURL = "https://github.com/claration/Feather"
+    private let donationsURL = "https://github.com/sponsors/khcrysalis"
+    private let githubURL = "https://github.com/sideload-kor/Aurora"
 
     private var selectedCertificate: CertificatePair? {
         guard storedSelectedCert >= 0, storedSelectedCert < certificates.count else { return nil }
@@ -211,14 +213,14 @@ struct SettingsView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle(.localized("Settings"))
             .navigationBarTitleDisplayMode(.large)
-            .tint(.orange)
+            .tint(Color(hex: tintHex))
             .alert(.localized("Show Welcome Again"), isPresented: $showingResetOnboarding) {
                 Button(.localized("Cancel"), role: .cancel) { }
                 Button(.localized("Continue")) {
                     hasCompletedOnboarding = false
                 }
             } message: {
-                Text(.localized("Aurora will show the welcome screens the next time you leave Settings."))
+                Text(.localized("Aurora will show the welcome screens right away."))
             }
         }
         .environment(\.locale, Locale(identifier: language))
@@ -355,7 +357,7 @@ struct SettingsView: View {
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         let encodedBody = body
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        return "\(url)/issues/new?template=bug.yml&title=\(encodedTitle)&text=\(encodedBody)"
+        return "\(url)/issues/new?template=bug.yml&title=\(encodedTitle)&body=\(encodedBody)"
     }
 }
 
@@ -436,7 +438,6 @@ private struct AuroraLanguageSettingsView: View {
         }
         .navigationTitle(.localized("Language"))
         .navigationBarTitleDisplayMode(.inline)
-        .tint(.orange)
     }
 }
 
@@ -505,10 +506,6 @@ private struct AuroraRepositoriesSettingsView: View {
             SourcesAddView()
                 .presentationDetents([.medium, .large])
         }
-        .task(id: Array(sources)) {
-            await viewModel.fetchSources(sources)
-        }
-        .tint(.orange)
     }
 }
 

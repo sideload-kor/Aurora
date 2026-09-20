@@ -38,6 +38,7 @@ struct FeatherApp: App {
 			.onOpenURL(perform: _handleURL)
 			.animation(.smooth, value: downloadManager.manualDownloads.description)
 			.environment(\.locale, Locale(identifier: language))
+			.id(language)
 			.onReceive(NotificationCenter.default.publisher(for: .heartbeatInvalidHost)) { _ in
 				DispatchQueue.main.async {
 					UIAlertController.showAlertWithOk(
