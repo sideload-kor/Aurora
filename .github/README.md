@@ -1,15 +1,12 @@
-[![GitHub Release](https://img.shields.io/github/v/release/claration/Feather?include_prereleases)](https://github.com/claration/Feather/releases)
-[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/claration/Feather/total)](https://github.com/claration/Feather/releases)
-[![GitHub License](https://img.shields.io/github/license/claration/Feather?color=%23C96FAD)](https://github.com/claration/Feather/blob/main/LICENSE)
-[![Sponsor Me](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/khcrysalis)
+[![GitHub Release](https://img.shields.io/github/v/release/sideload-kor/Aurora?include_prereleases)](https://github.com/sideload-kor/Aurora/releases)
+[![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/sideload-kor/Aurora/total)](https://github.com/sideload-kor/Aurora/releases)
+
+Sponsor Feather Project
+[![Sponsor Feather Project](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/khcrysalis)
 
 <div align="center">
 
-<img title="Feather" alt="Feather" height="180" src="landing.png">
-
-Sideloading app meant for developer certificates.
-
-<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="demo-dark.png"><source media="(prefers-color-scheme: light)" srcset="demo-light.png"><img alt="Feather" src="demo-light.png"></picture></p>
+<p align="center"><picture><img alt="Aurora" src="https://github.com/sideload-kor/Aurora/blob/3beca2b7b406ec167c0f2323752d7dfa3fa789a2/icon.png"></picture></p>
 
 
 </div>
@@ -30,32 +27,16 @@ Sideloading app meant for developer certificates.
 
 ## Download
 
-Visit [releases](https://github.com/claration/Feather/releases) and get the latest `.ipa`.
+Visit [releases](https://github.com/sideload-kor/Aurora/releases) and get the latest `.ipa`.
 
-<a href="https://celloserenity.github.io/altdirect/?url=https://raw.githubusercontent.com/claration/Feather/refs/heads/main/app-repo.json" target="_blank">
-   <img src="https://github.com/CelloSerenity/altdirect/blob/main/assets/png/AltSource_Blue.png?raw=true" alt="Add AltSource" width="200">
-</a>
 <a href="https://github.com/claration/Feather/releases/latest/download/Feather.ipa" target="_blank">
    <img src="https://github.com/CelloSerenity/altdirect/blob/main/assets/png/Download_Blue.png?raw=true" alt="Download .ipa" width="200">
 </a>
 
-## Translating
-
-Impactor now has translation support, all localizations are located in `Feather/Resources/Localizable.xcstrings`.
-
-To add a new language, open Xcode and use the interface to add/contribute to languages.
-
-To properly contribute and test potentially test localizations, you can head over to the [contributing guide](./CONTRIBUTING.md).
-
-## Sponsors
-
-| Thanks to all my [sponsors](https://github.com/sponsors/claration)!! |
-|:--------------------------------------------------------------------:|
-| <img src="https://sponsors.claration.dev/sponsors.png">              |
-| _**"samara is cute" - Vendicated**_                                  |
 
 ## Acknowledgements
 
+- [SideLoad-Kor](https://github.com/sideload-kor) - Made this
 - [Samara](https://github.com/claration) - The maker
 - [idevice](https://github.com/jkcoxson/idevice) - Backend for builds with this included, used for communication with `installd`.
 - [*.backloop.dev](https://backloop.dev/) - localhost with public CA signed SSL certificate
