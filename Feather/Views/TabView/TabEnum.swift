@@ -16,7 +16,7 @@ enum TabEnum: String, CaseIterable, Hashable {
 	
 	var title: String {
 		switch self {
-		case .sources:     	return .localized("Sources")
+		case .sources:     	return .localized("Store")
 		case .library: 		return .localized("Library")
 		case .settings: 	return .localized("Settings")
 		case .certificates:	return .localized("Certificates")

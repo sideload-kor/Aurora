@@ -13,6 +13,8 @@ import OSLog
 @main
 struct FeatherApp: App {
 	@UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+	@AppStorage("aurora.language") private var language = "en"
+	@AppStorage("aurora.hasCompletedOnboarding") private var hasCompletedOnboarding = false
 	
 	let heartbeat = HeartbeatManager.shared
 	
@@ -21,15 +23,21 @@ struct FeatherApp: App {
 	
 	var body: some Scene {
 		WindowGroup {
-			VStack {
-				DownloadHeaderView(downloadManager: downloadManager)
-					.transition(.move(edge: .top).combined(with: .opacity))
-				VariedTabbarView()
-					.environment(\.managedObjectContext, storage.context)
-					.onOpenURL(perform: _handleURL)
-					.transition(.move(edge: .top).combined(with: .opacity))
+			VStack(spacing: 0) {
+				if hasCompletedOnboarding {
+					DownloadHeaderView(downloadManager: downloadManager)
+						.transition(.move(edge: .top).combined(with: .opacity))
+					VariedTabbarView()
+						.transition(.move(edge: .top).combined(with: .opacity))
+				} else {
+					AuroraOnboardingView()
+						.transition(.opacity)
+				}
 			}
+			.environment(\.managedObjectContext, storage.context)
+			.onOpenURL(perform: _handleURL)
 			.animation(.smooth, value: downloadManager.manualDownloads.description)
+			.environment(\.locale, Locale(identifier: language))
 			.onReceive(NotificationCenter.default.publisher(for: .heartbeatInvalidHost)) { _ in
 				DispatchQueue.main.async {
 					UIAlertController.showAlertWithOk(
@@ -252,4 +260,276 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 		}
 	}
 
+}
+
+
+// MARK: - Aurora onboarding
+
+private enum AuroraLanguage: String, CaseIterable, Identifiable {
+	case english = "en"
+	case korean = "ko"
+	case chinese = "zh-Hans"
+	case japanese = "ja"
+	case spanish = "es"
+
+	var id: String { rawValue }
+
+	var title: String {
+		switch self {
+		case .english: return "English"
+		case .korean: return "한국어"
+		case .chinese: return "简体中文"
+		case .japanese: return "日本語"
+		case .spanish: return "Español"
+		}
+	}
+
+	var flag: String {
+		switch self {
+		case .english: return "🇺🇸"
+		case .korean: return "🇰🇷"
+		case .chinese: return "🇨🇳"
+		case .japanese: return "🇯🇵"
+		case .spanish: return "🇪🇸"
+		}
+	}
+}
+
+private struct AuroraOnboardingView: View {
+	@AppStorage("aurora.language") private var language = "en"
+	@AppStorage("aurora.hasCompletedOnboarding") private var completed = false
+	@State private var page = 0
+
+	private var selectedLanguage: AuroraLanguage {
+		AuroraLanguage(rawValue: language) ?? .english
+	}
+
+	var body: some View {
+		ZStack {
+			AuroraBackground()
+
+			VStack(spacing: 0) {
+				HStack {
+					Spacer()
+					Button(.localized("Skip")) {
+						completed = true
+					}
+					.font(.subheadline.weight(.semibold))
+					.foregroundStyle(.secondary)
+					.padding(.horizontal, 22)
+					.padding(.top, 18)
+				}
+
+				TabView(selection: $page) {
+					AuroraIntroPage(
+						icon: "sparkles",
+						title: .localized("Welcome to Aurora"),
+						subtitle: .localized("A cleaner, faster way to discover and install your apps."),
+						accent: .orange
+					).tag(0)
+
+					AuroraLanguagePage(language: $language).tag(1)
+
+					AuroraQuickSetupPage(showSource: $showSource).tag(2)
+				}
+				.tabViewStyle(.page(indexDisplayMode: .never))
+
+				HStack(spacing: 7) {
+					ForEach(0..<3, id: \.self) { index in
+						Capsule()
+							.fill(index == page ? Color.orange : Color.secondary.opacity(0.22))
+							.frame(width: index == page ? 22 : 7, height: 7)
+							.animation(.smooth, value: page)
+					}
+				}
+				.padding(.bottom, 18)
+
+				Button {
+					if page < 2 {
+						withAnimation(.smooth) { page += 1 }
+					} else {
+						completed = true
+					}
+				} label: {
+					HStack(spacing: 8) {
+						Text(page == 2 ? .localized("Start Using Aurora") : .localized("Continue"))
+						Image(systemName: page == 2 ? "checkmark" : "arrow.right")
+					}
+					.font(.headline)
+					.frame(maxWidth: .infinity)
+					.padding(.vertical, 16)
+				}
+				.buttonStyle(AuroraPrimaryButtonStyle())
+				.padding(.horizontal, 22)
+				.padding(.bottom, 20)
+			}
+		}
+		.environment(\.locale, Locale(identifier: language))
+	}
+}
+
+private struct AuroraIntroPage: View {
+	let icon: String
+	let title: String
+	let subtitle: String
+	let accent: Color
+
+	var body: some View {
+		VStack(spacing: 24) {
+			Spacer()
+			AuroraGlassIcon(systemName: icon, color: accent)
+			Text(title)
+				.font(.system(size: 36, weight: .bold, design: .rounded))
+				.multilineTextAlignment(.center)
+			Text(subtitle)
+				.font(.title3)
+				.foregroundStyle(.secondary)
+				.multilineTextAlignment(.center)
+				.frame(maxWidth: 420)
+			Spacer()
+		}
+		.padding(.horizontal, 28)
+	}
+}
+
+private struct AuroraLanguagePage: View {
+	@Binding var language: String
+
+	var body: some View {
+		VStack(alignment: .leading, spacing: 18) {
+			Spacer()
+			Text(.localized("Choose your language"))
+				.font(.system(size: 34, weight: .bold, design: .rounded))
+			Text(.localized("You can change this anytime in Settings."))
+				.foregroundStyle(.secondary)
+			ScrollView {
+				VStack(spacing: 10) {
+					ForEach(AuroraLanguage.allCases) { item in
+						Button {
+							withAnimation(.smooth) { language = item.rawValue }
+						}
+						label: {
+							HStack(spacing: 14) {
+								Text(item.flag).font(.title2)
+								Text(item.title).font(.body.weight(.semibold))
+								Spacer()
+								if language == item.rawValue {
+									Image(systemName: "checkmark.circle.fill")
+										.foregroundStyle(.orange)
+								}
+							}
+							.padding(16)
+							.background(AuroraGlassShape(cornerRadius: 18))
+						}
+						.buttonStyle(.plain)
+					}
+				}
+			}
+			Spacer()
+		}
+		.padding(.horizontal, 22)
+	}
+}
+
+private struct AuroraQuickSetupPage: View {
+
+	var body: some View {
+		VStack(spacing: 20) {
+			Spacer()
+			AuroraGlassIcon(systemName: "wand.and.stars", color: .orange)
+			Text(.localized("You're ready"))
+				.font(.system(size: 36, weight: .bold, design: .rounded))
+			Text(.localized("Aurora keeps advanced options out of your way. Sources, certificates, signing and other technical settings live neatly in Settings."))
+				.font(.title3)
+				.foregroundStyle(.secondary)
+				.multilineTextAlignment(.center)
+			Text(.localized("Your App Store starts on the Sources screen, while technical setup stays in Settings."))
+				.font(.subheadline)
+				.foregroundStyle(.orange)
+				.multilineTextAlignment(.center)
+			Spacer()
+		}
+		.padding(.horizontal, 24)
+	}
+}
+
+private struct AuroraGlassIcon: View {
+	let systemName: String
+	let color: Color
+
+	var body: some View {
+		Image(systemName: systemName)
+			.font(.system(size: 42, weight: .semibold))
+			.foregroundStyle(color)
+			.frame(width: 108, height: 108)
+			.background(AuroraGlassShape(cornerRadius: 32))
+			.shadow(color: .orange.opacity(0.14), radius: 24, y: 12)
+	}
+}
+
+private struct AuroraBackground: View {
+	var body: some View {
+		ZStack {
+			Color(.systemGroupedBackground)
+			Circle()
+				.fill(Color.orange.opacity(0.12))
+				.frame(width: 320)
+				.blur(radius: 70)
+				.offset(x: 150, y: -300)
+			Circle()
+				.fill(Color.orange.opacity(0.07))
+				.frame(width: 260)
+				.blur(radius: 70)
+				.offset(x: -160, y: 300)
+		}
+		.ignoresSafeArea()
+	}
+}
+
+private struct AuroraGlassShape: View {
+	let cornerRadius: CGFloat
+
+	var body: some View {
+		if #available(iOS 26.0, *) {
+			RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+				.fill(.clear)
+				.glassEffect(.regular.tint(.orange.opacity(0.08)), in: .rect(cornerRadius: cornerRadius))
+		} else {
+			RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+				.fill(.thinMaterial)
+				.overlay {
+					RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+						.strokeBorder(.white.opacity(0.14), lineWidth: 0.7)
+				}
+		}
+	}
+}
+
+private struct AuroraPrimaryButtonStyle: ButtonStyle {
+	func makeBody(configuration: Configuration) -> some View {
+		configuration.label
+			.foregroundStyle(.white)
+			.background(
+				RoundedRectangle(cornerRadius: 18, style: .continuous)
+					.fill(Color.orange.gradient)
+			)
+			.opacity(configuration.isPressed ? 0.78 : 1)
+			.scaleEffect(configuration.isPressed ? 0.985 : 1)
+	}
+}
+
+private struct AuroraSecondaryButtonStyle: ButtonStyle {
+	func makeBody(configuration: Configuration) -> some View {
+		configuration.label
+			.foregroundStyle(.orange)
+			.background(
+				RoundedRectangle(cornerRadius: 18, style: .continuous)
+					.fill(.thinMaterial)
+			)
+			.overlay {
+				RoundedRectangle(cornerRadius: 18, style: .continuous)
+					.strokeBorder(Color.orange.opacity(0.25), lineWidth: 1)
+			}
+			.opacity(configuration.isPressed ? 0.72 : 1)
+	}
 }
