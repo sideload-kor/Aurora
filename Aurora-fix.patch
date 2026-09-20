@@ -1,0 +1,230 @@
+diff -ru aurora/Aurora-main/.github/workflows/release.yml fix/.github/workflows/release.yml
+--- aurora/Aurora-main/.github/workflows/release.yml	2026-09-20 04:49:43.000000000 +0000
++++ fix/.github/workflows/release.yml	2026-09-20 05:11:09.490907047 +0000
+@@ -32,7 +32,7 @@
+           swift --version
+ 
+       - name: Cache Swift Package Manager
+-        uses: actions/cache@v4
++        uses: actions/cache@v5
+         with:
+           path: |
+             ~/Library/Developer/Xcode/DerivedData
+diff -ru aurora/Aurora-main/Feather/FeatherApp.swift fix/Feather/FeatherApp.swift
+--- aurora/Aurora-main/Feather/FeatherApp.swift	2026-09-20 04:49:43.000000000 +0000
++++ fix/Feather/FeatherApp.swift	2026-09-20 05:11:09.490750581 +0000
+@@ -38,6 +38,7 @@
+ 			.onOpenURL(perform: _handleURL)
+ 			.animation(.smooth, value: downloadManager.manualDownloads.description)
+ 			.environment(\.locale, Locale(identifier: language))
++			.id(language)
+ 			.onReceive(NotificationCenter.default.publisher(for: .heartbeatInvalidHost)) { _ in
+ 				DispatchQueue.main.async {
+ 					UIAlertController.showAlertWithOk(
+diff -ru aurora/Aurora-main/Feather/Views/Settings/SettingsView.swift fix/Feather/Views/Settings/SettingsView.swift
+--- aurora/Aurora-main/Feather/Views/Settings/SettingsView.swift	2026-09-20 04:49:43.000000000 +0000
++++ fix/Feather/Views/Settings/SettingsView.swift	2026-09-20 05:10:52.787536349 +0000
+@@ -8,11 +8,13 @@
+ import UIKit
+ import Darwin
+ import IDeviceSwift
++import AltSourceKit
+ 
+ struct SettingsView: View {
+     @AppStorage("feather.selectedCert") private var storedSelectedCert: Int = 0
++    @AppStorage("Feather.userTintColor") private var tintHex: String = "#848ef9"
+     @AppStorage("aurora.language") private var language = "en"
+-    @AppStorage("aurora.hasCompletedOnboarding") private var hasCompletedOnboarding = true
++    @AppStorage("aurora.hasCompletedOnboarding") private var hasCompletedOnboarding = false
+ 
+     @State private var currentIcon: String? = UIApplication.shared.alternateIconName
+     @State private var showingResetOnboarding = false
+@@ -23,8 +25,8 @@
+         animation: .snappy
+     ) private var certificates: FetchedResults<CertificatePair>
+ 
+-    private let donationsURL = "https://github.com/sponsors/claration"
+-    private let githubURL = "https://github.com/claration/Feather"
++    private let donationsURL = "https://github.com/sponsors/khcrysalis"
++    private let githubURL = "https://github.com/sideload-kor/Aurora"
+ 
+     private var selectedCertificate: CertificatePair? {
+         guard storedSelectedCert >= 0, storedSelectedCert < certificates.count else { return nil }
+@@ -211,14 +213,14 @@
+             .background(Color(.systemGroupedBackground))
+             .navigationTitle(.localized("Settings"))
+             .navigationBarTitleDisplayMode(.large)
+-            .tint(.orange)
++            .tint(Color(hex: tintHex))
+             .alert(.localized("Show Welcome Again"), isPresented: $showingResetOnboarding) {
+                 Button(.localized("Cancel"), role: .cancel) { }
+                 Button(.localized("Continue")) {
+                     hasCompletedOnboarding = false
+                 }
+             } message: {
+-                Text(.localized("Aurora will show the welcome screens the next time you leave Settings."))
++                Text(.localized("Aurora will show the welcome screens right away."))
+             }
+         }
+         .environment(\.locale, Locale(identifier: language))
+@@ -355,7 +357,7 @@
+             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+         let encodedBody = body
+             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+-        return "\(url)/issues/new?template=bug.yml&title=\(encodedTitle)&text=\(encodedBody)"
++        return "\(url)/issues/new?template=bug.yml&title=\(encodedTitle)&body=\(encodedBody)"
+     }
+ }
+ 
+@@ -436,7 +438,6 @@
+         }
+         .navigationTitle(.localized("Language"))
+         .navigationBarTitleDisplayMode(.inline)
+-        .tint(.orange)
+     }
+ }
+ 
+@@ -505,10 +506,6 @@
+             SourcesAddView()
+                 .presentationDetents([.medium, .large])
+         }
+-        .task(id: Array(sources)) {
+-            await viewModel.fetchSources(sources)
+-        }
+-        .tint(.orange)
+     }
+ }
+ 
+diff -ru aurora/Aurora-main/Feather/Views/Sources/SourcesView.swift fix/Feather/Views/Sources/SourcesView.swift
+--- aurora/Aurora-main/Feather/Views/Sources/SourcesView.swift	2026-09-20 04:49:43.000000000 +0000
++++ fix/Feather/Views/Sources/SourcesView.swift	2026-09-20 05:10:52.787049790 +0000
+@@ -10,6 +10,7 @@
+ import NukeUI
+ 
+ struct SourcesView: View {
++    @AppStorage("Feather.userTintColor") private var tintHex: String = "#848ef9"
+     @StateObject private var viewModel = SourcesViewModel.shared
+     @State private var searchText = ""
+     @State private var isAddingSource = false
+@@ -72,7 +73,7 @@
+                     .presentationDetents([.medium, .large])
+             }
+         }
+-        .tint(.orange)
++        .tint(Color(hex: tintHex))
+         .task(id: Array(sources)) {
+             await viewModel.fetchSources(sources)
+         }
+diff -ru aurora/Aurora-main/Feather/Views/TabView/Bars/TabbarView.swift fix/Feather/Views/TabView/Bars/TabbarView.swift
+--- aurora/Aurora-main/Feather/Views/TabView/Bars/TabbarView.swift	2026-09-20 04:49:43.000000000 +0000
++++ fix/Feather/Views/TabView/Bars/TabbarView.swift	2026-09-20 05:10:36.463052221 +0000
+@@ -4,8 +4,10 @@
+ //
+ 
+ import SwiftUI
++import AltSourceKit
+ 
+ struct TabbarView: View {
++    @AppStorage("Feather.userTintColor") private var tintHex: String = "#848ef9"
+     @State private var selectedTab: TabEnum = .sources
+ 
+     var body: some View {
+@@ -18,15 +20,7 @@
+                     .tag(tab)
+             }
+         }
+-        .tint(.orange)
++        .tint(Color(hex: tintHex))
+         .background(Color(.systemBackground))
+     }
+ }
+-
+-// Kept as a tiny wrapper so FeatherApp can use Aurora's navigation container
+-// without requiring another source file to be added to the Xcode project.
+-struct VariedTabbarView: View {
+-    var body: some View {
+-        TabbarView()
+-    }
+-}
+diff -ru aurora/Aurora-main/NimbleKit/Sources/NimbleExtensions/String/String+localized.swift fix/NimbleKit/Sources/NimbleExtensions/String/String+localized.swift
+--- aurora/Aurora-main/NimbleKit/Sources/NimbleExtensions/String/String+localized.swift	2026-09-20 04:49:43.000000000 +0000
++++ fix/NimbleKit/Sources/NimbleExtensions/String/String+localized.swift	2026-09-20 05:11:09.476891038 +0000
+@@ -5,19 +5,73 @@
+ //  Created by samara on 20.03.2025.
+ //
+ 
+-import Foundation.NSString
++import Foundation
+ import SwiftUI
+ 
++/// Caches `.lproj` bundles so the app can localize strings with a language
++/// chosen inside the app instead of the system language only.
++private final class NBLocalizationBundleCache {
++	static let shared = NBLocalizationBundleCache()
++
++	/// Key the app writes when the user picks a language in onboarding/settings.
++	static let languageKey = "aurora.language"
++
++	private let _lock = NSLock()
++	private var _cache: [String: Bundle] = [:]
++
++	func bundle(for language: String) -> Bundle {
++		_lock.lock()
++		defer { _lock.unlock() }
++
++		if let cached = _cache[language] {
++			return cached
++		}
++
++		guard
++			let path = Bundle.main.path(forResource: language, ofType: "lproj"),
++			let bundle = Bundle(path: path)
++		else {
++			return .main
++		}
++
++		_cache[language] = bundle
++		return bundle
++	}
++}
++
+ extension String {
+ 	// from: https://github.com/NSAntoine/Antoine/blob/main/Antoine/Backend/Extensions/Foundation.swift#L43-L55
+ 	// was given permission to use any code from antoine as I like - thank you Serena!~
+-	
++
++	/// Bundle matching the in-app language selection, falling back to `.main`.
++	static private var _localizationBundle: Bundle {
++		guard
++			let language = UserDefaults.standard.string(forKey: NBLocalizationBundleCache.languageKey),
++			!language.isEmpty
++		else {
++			return .main
++		}
++
++		return NBLocalizationBundleCache.shared.bundle(for: language)
++	}
++
++	static private func _lookup(_ name: String) -> String {
++		let value = _localizationBundle.localizedString(forKey: name, value: nil, table: nil)
++
++		guard value != name else {
++			/// Not translated in the selected language, fall back to the main bundle.
++			return NSLocalizedString(name, comment: "")
++		}
++
++		return value
++	}
++
+ 	static public func localized(_ name: String) -> String {
+-		NSLocalizedString(name, comment: "")
++		_lookup(name)
+ 	}
+-	
++
+ 	static public func localized(_ name: String, arguments: CVarArg...) -> String {
+-		String(format: NSLocalizedString(name, comment: ""), arguments: arguments)
++		String(format: _lookup(name), arguments: arguments)
+ 	}
+ 	/// Localizes the current string using the main bundle.
+ 	///
