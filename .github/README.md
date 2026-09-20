@@ -1,54 +1,51 @@
 [![GitHub Release](https://img.shields.io/github/v/release/sideload-kor/Aurora?include_prereleases)](https://github.com/sideload-kor/Aurora/releases)
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/sideload-kor/Aurora/total)](https://github.com/sideload-kor/Aurora/releases)
-
-Sponsor Feather Project
-[![Sponsor Feather Project](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/khcrysalis)
-
-<div align="center">
-
-<p align="center"><picture><img alt="Aurora" src="https://github.com/sideload-kor/Aurora/blob/3beca2b7b406ec167c0f2323752d7dfa3fa789a2/icon.png"></picture></p>
+<a href="https://github.com/sponsors/khcrysalis"><img src="https://img.shields.io/badge/Sponsor_Feather_Project-black?style=for-the-badge" alt="Sponsor Feather Project"></a>
 
 
-</div>
+<img alt="Aurora" src="https://github.com/sideload-kor/Aurora/blob/3beca2b7b406ec167c0f2323752d7dfa3fa789a2/icon.png" width="120" />
 
-## Features
+# Aurora
 
-- User friendly, and clean UI.
-- Sign and install applications.
-- Supports [AltStore](https://faq.altstore.io/distribute-your-apps/make-a-source#apps) repositories.
-- View detailed information about apps and your certificates.
-- Configurable signing options mainly for modifying the app, such as appearance and allowing support for the files app.
-  - This includes patching apps for compatibility and Liquid Glass.
-- Tweak support for advanced users, using [Ellekit](https://github.com/tealbathingsuit/ellekit) for injection. 
-  - Supports injecting `.deb` and `.dylib` files.
-- Actively maintained: always ensuring most apps get installed properly.
-- No tracking or analytics, ensuring user privacy.
-- Of course, open source and free.
+## 주요 기능 (Features)
 
-## Download
+- 직관적이고 깔끔한 사용자 인터페이스(UI) 제공
+- 앱 서명(Sign) 및 직접 설치 지원
+- [AltStore](https://faq.altstore.io/distribute-your-apps/make-a-source#apps) 소스(리포지토리) 호환
+- 앱 및 사용자 인증서의 상세 정보 확인 가능
+- 앱 모양 변경, 파일 앱 접근 허용 등 커스텀 서명 옵션 지원
+  - 호환성 패치 및 Liquid Glass 패치 기능 포함
+- [Ellekit](https://github.com/tealbathingsuit/ellekit) 기반의 주입 기능을 통한 고급 트윅(Tweak) 지원
+  - `.deb` 및 `.dylib` 파일 주입 지원
+- 지속적인 유지보수: 최신 앱들이 정상적으로 설치될 수 있도록 상시 관리
+- 추적 및 애널리틱스가 없어 사용자의 개인정보를 안전하게 보호
+- 완전 무료 및 오픈소스
 
-Visit [releases](https://github.com/sideload-kor/Aurora/releases) and get the latest `.ipa`.
+## 다운로드 (Download)
 
-<a href="https://github.com/claration/Feather/releases/latest/download/Feather.ipa" target="_blank">
-   <img src="https://github.com/CelloSerenity/altdirect/blob/main/assets/png/Download_Blue.png?raw=true" alt="Download .ipa" width="200">
+[Releases](https://github.com/sideload-kor/Aurora/releases) 페이지에서 최신 버전의 `.ipa` 파일을 다운로드하세요.
+
+<a href="https://github.com/sideload-kor/Aurora/releases/latest" target="_blank">
+  <img src="https://github.com/CelloSerenity/altdirect/blob/main/assets/png/Download_Blue.png?raw=true" alt="Download .ipa" width="160">
 </a>
 
+## 기여 및 감사 (Acknowledgements)
 
-## Acknowledgements
+- [SideLoad-Kor](https://github.com/sideload-kor) - 프로젝트 주관
+- [Samara](https://github.com/declaration) - 개발자
+- [idevice](https://github.com/jkcoxson/idevice) - `installd` 통신 및 빌드 백엔드 활용
+- [*.backloop.dev](https://backloop.dev/) - 퍼블릭 CA 서명 SSL 인증서를 적용한 로컬호스트 환경
+- [Vapor](https://github.com/vapor/vapor) - 서버 사이드 Swift HTTP 웹 프레임워크
+- [Zsign](https://github.com/zhlynn/zsign) - iOS 등 다른 플랫폼에서도 동작하도록 재구현된 기기 내 서명 엔진
+- [LiveContainer](https://github.com/LiveContainer/LiveContainer) - 버그 수정 및 도움
+- [Nuke](https://github.com/kean/Nuke) - 이미지 캐싱 라이브러리
+- [Asspp](https://github.com/Lakr233/Asspp) - HTTP 서버 설정 관련 코드 참조
+- [plistserver](https://github.com/nekohaxx/plistserver) - https://api.palera.in 에 호스팅된 서버 코드
 
-- [SideLoad-Kor](https://github.com/sideload-kor) - Made this
-- [Samara](https://github.com/claration) - The maker
-- [idevice](https://github.com/jkcoxson/idevice) - Backend for builds with this included, used for communication with `installd`.
-- [*.backloop.dev](https://backloop.dev/) - localhost with public CA signed SSL certificate
-- [Vapor](https://github.com/vapor/vapor) - A server-side Swift HTTP web framework.
-- [Zsign](https://github.com/zhlynn/zsign) - Allowing to sign on-device, reimplimented to work on other platforms such as iOS.
-- [LiveContainer](https://github.com/LiveContainer/LiveContainer) - Fixes/some help
-- [Nuke](https://github.com/kean/Nuke) - Image caching.
-- [Asspp](https://github.com/Lakr233/Asspp) - Some code for setting up the http server.
-- [plistserver](https://github.com/nekohaxx/plistserver) - Hosted on https://api.palera.in.
+## 라이선스 (License)
 
-## License 
+본 프로젝트는 **GPL-3.0 라이선스** 하에 배포됩니다. 전체 라이선스 전문은 [LICENSE](https://github.com/sideload-kor/Aurora/blob/main/LICENSE) 파일에서 확인하실 수 있습니다. 
 
-This project is licensed under the GPL-3.0 license. You can see the full details of the license [here](https://github.com/claration/Feather/blob/main/LICENSE). It's under this specific license because I wanted to make a project that is transparent to the user thats related to certificate paired sideloading, before this project there weren't any open source projects that filled in this gap.
+인증서 기반 사이드로딩 분야에서 사용자에게 투명하게 공개된 오픈소스 프로젝트가 부족했기에, 누구나 자유롭게 이용할 수 있도록 오픈소스로 공개하게 되었습니다.
 
-By contributing to this project, you agree to license your code under the GPL-3.0 license as well (including agreeing to license exceptions), ensuring that your work, like all other contributions, remains freely accessible and open.
+본 프로젝트에 기여하는 모든 코드 또한 GPL-3.0 라이선스가 적용되며, 개발된 모든 작업물은 앞으로도 자유롭게 접근하고 사용할 수 있도록 유지됩니다.
