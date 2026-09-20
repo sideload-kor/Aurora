@@ -300,25 +300,36 @@ private struct AuroraOnboardingView: View {
 	@AppStorage("aurora.hasCompletedOnboarding") private var completed = false
 	@State private var page = 0
 
-	private var selectedLanguage: AuroraLanguage {
-		AuroraLanguage(rawValue: language) ?? .english
-	}
-
 	var body: some View {
 		ZStack {
 			AuroraBackground()
 
 			VStack(spacing: 0) {
 				HStack {
-					Spacer()
-					Button(.localized("Skip")) {
-						completed = true
+					if page > 0 {
+						Button {
+							withAnimation(.smooth) { page -= 1 }
+						} label: {
+							Image(systemName: "chevron.left")
+								.font(.subheadline.weight(.bold))
+								.frame(width: 38, height: 38)
+								.background(.thinMaterial, in: Circle())
+						}
+						.foregroundStyle(.primary)
+					} else {
+						Color.clear.frame(width: 38, height: 38)
 					}
-					.font(.subheadline.weight(.semibold))
-					.foregroundStyle(.secondary)
-					.padding(.horizontal, 22)
-					.padding(.top, 18)
+					Spacer()
+					if page < 2 {
+						Button(.localized("Skip")) { completed = true }
+						.font(.subheadline.weight(.semibold))
+						.foregroundStyle(.secondary)
+					} else {
+						Color.clear.frame(width: 38, height: 38)
+					}
 				}
+				.padding(.horizontal, 22)
+				.padding(.top, 16)
 
 				TabView(selection: $page) {
 					AuroraIntroPage(
@@ -330,7 +341,7 @@ private struct AuroraOnboardingView: View {
 
 					AuroraLanguagePage(language: $language).tag(1)
 
-					AuroraQuickSetupPage(showSource: $showSource).tag(2)
+					AuroraQuickSetupPage().tag(2)
 				}
 				.tabViewStyle(.page(indexDisplayMode: .never))
 
@@ -432,21 +443,28 @@ private struct AuroraLanguagePage: View {
 }
 
 private struct AuroraQuickSetupPage: View {
-
 	var body: some View {
-		VStack(spacing: 20) {
+		VStack(spacing: 18) {
 			Spacer()
 			AuroraGlassIcon(systemName: "wand.and.stars", color: .orange)
 			Text(.localized("You're ready"))
 				.font(.system(size: 36, weight: .bold, design: .rounded))
+				.multilineTextAlignment(.center)
 			Text(.localized("Aurora keeps advanced options out of your way. Sources, certificates, signing and other technical settings live neatly in Settings."))
 				.font(.title3)
 				.foregroundStyle(.secondary)
 				.multilineTextAlignment(.center)
-			Text(.localized("Your App Store starts on the Sources screen, while technical setup stays in Settings."))
-				.font(.subheadline)
-				.foregroundStyle(.orange)
-				.multilineTextAlignment(.center)
+				.frame(maxWidth: 430)
+			HStack(spacing: 10) {
+				Image(systemName: "checkmark.circle.fill")
+				Text(.localized("Your App Store starts on the Sources screen, while technical setup stays in Settings."))
+					.font(.subheadline.weight(.medium))
+					.foregroundStyle(.primary)
+			}
+			.padding(14)
+			.frame(maxWidth: 430)
+			.background(AuroraGlassShape(cornerRadius: 18))
+			.foregroundStyle(.orange)
 			Spacer()
 		}
 		.padding(.horizontal, 24)
