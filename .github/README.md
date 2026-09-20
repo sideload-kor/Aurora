@@ -1,9 +1,11 @@
 [![GitHub Release](https://img.shields.io/github/v/release/sideload-kor/Aurora?include_prereleases)](https://github.com/sideload-kor/Aurora/releases)
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/sideload-kor/Aurora/total)](https://github.com/sideload-kor/Aurora/releases)
 <a href="https://github.com/sponsors/khcrysalis"><img src="https://img.shields.io/badge/Sponsor_Feather_Project-black?style=for-the-badge" alt="Sponsor Feather Project"></a>
-
-
+<br>
+<br>
+<br>
 <img alt="Aurora" src="https://github.com/sideload-kor/Aurora/blob/3beca2b7b406ec167c0f2323752d7dfa3fa789a2/icon.png" width="120" />
+<br>
 
 # Aurora
 
